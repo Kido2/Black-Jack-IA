@@ -1,4 +1,6 @@
-import random, pygame, os, time
+import random, pygame, time
+from pygame.locals import *
+from random import randint
 
 palos = {'D': 'Diamantes', 'P':'Picas', 'T': 'Treboles', 'C': 'Corazones'}
 nombre = {1: 'Az', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'J', 12: 'Q', 13: 'K'}
@@ -60,13 +62,34 @@ def text_objects(text, font):
     return TextSurface, TextSurface.get_rect()
 
 
-def mensaje_en_pantalla(text):
-    largeText = pygame.font.Font('freesansbold.ttf', 50)
+def mensaje_en_pantalla(text, x, y):
+    largeText = pygame.font.Font('freesansbold.ttf', 20)
     TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((display_width/2), (display_height/2))
+    TextRect.center = ((x), (y))
     gameDisplay.blit(TextSurf, TextRect)
 
+display_width = 800
+display_height = 600
+gameDisplay = pygame.display.set_mode((display_width, display_height))
 
+def board():
+    pygame.init()
+    pygame.display.set_caption("Real Game")
+    board=pygame.image.load("board.png")
+    gameDisplay.blit(board,(display_width, display_height))
+    for event in pygame.event.get():
+        if event.type==QUIT:
+            pygame.quit()
+            sys.exit()
+    pygame.display.update()
+
+def gameOver():
+    gameDisplay.fill(white)
+    mensaje_en_pantalla('Juego Terminado', display_width/2, display_height/2)
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            pygame.quit()
 
 
 game_over = False
@@ -100,21 +123,21 @@ while not game_over:
     del baraja[-1]
     dealer.append(baraja[-1])
     del baraja[-1]
+    pygame.display.update()
     gameDisplay.fill(green)
     mostrarcartas(dealer, 500, 150)
     mostrarcartas(jugador, 100, 500)
+    mensaje_en_pantalla("Presione 'h' para pedir carta", 150, 100)
+    mensaje_en_pantalla("Presione 'p' para plantarse", 150, 70)
     pygame.display.update()
     turno_jugador = True
-
-
-
 
     while turno_jugador:
 
         if sum_de_cartas(jugador) > 21:
             pygame.display.update()
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has perdido')
+            mensaje_en_pantalla('Has perdido', display_width/2, display_height/2)
             pygame.display.update()
             time.sleep(2)
             ciclo = False
@@ -124,7 +147,7 @@ while not game_over:
         elif sum_de_cartas(jugador) == 21:
             pygame.display.update()
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has ganado')
+            mensaje_en_pantalla('Has ganado', display_width/2, display_height/2)
             pygame.display.update()
             ciclo = False
             turno_jugador = False
@@ -132,23 +155,24 @@ while not game_over:
             turno_dealer = False
         elif sum_de_cartas(jugador) < 21:
             ciclo =True
-            
+
         while ciclo:
           for event in pygame.event.get():
-             if event.type == 'h':
+            if event.key == K_h:
                 jugador.append(baraja[-1])
                 del baraja[-1]
-                pygame.display.update()
                 mostrarcartas(jugador, 100, 500)
                 pygame.display.update()
+                time.sleep(1)
                 turno_jugador = True
                 turno_dealer = False
                 game_over = False
-             
-             elif event.type == 's':
+                ciclo = False
+
+            elif event.key == K_p:
                 turno_jugador = False
                 turno_dealer = True
-                
+                ciclo = False
 
     while turno_dealer:
         pygame.display.update()
@@ -158,7 +182,7 @@ while not game_over:
         if sum_de_cartas(dealer) == 21:
             pygame.display.update()
             mostrarcartas(dealer, 500, 150)
-            mensaje_en_pantalla('El dealer ha  ganado')
+            mensaje_en_pantalla('El dealer ha  ganado', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
@@ -168,7 +192,7 @@ while not game_over:
             pygame.display.update()
             mostrarcartas(dealer, 500, 150)
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('El dealer ha perdido')
+            mensaje_en_pantalla('El dealer ha perdido', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
@@ -176,7 +200,7 @@ while not game_over:
 
         elif sum_de_cartas(dealer) >= sum_de_cartas(jugador) and sum_de_cartas(dealer) > 21:
             mostrarcartas(dealer, 500, 150)
-            mensaje_en_pantalla('El dealer ha ganado')
+            mensaje_en_pantalla('El dealer ha ganado', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
@@ -184,7 +208,7 @@ while not game_over:
 
         elif sum_de_cartas(dealer) == sum_de_cartas(jugador) and sum_de_cartas(dealer) < 21:
             mostrarcartas(dealer, 500, 150)
-            mensaje_en_pantalla('El dealer ha ganado')
+            mensaje_en_pantalla('El dealer ha ganado', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
@@ -200,7 +224,7 @@ while not game_over:
 
         elif sum_de_cartas(jugador) < 21 and sum_de_cartas(dealer) > 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has ganado')
+            mensaje_en_pantalla('Has ganado', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
@@ -208,7 +232,7 @@ while not game_over:
 
         elif sum_de_cartas(jugador) > sum_de_cartas(dealer) and sum_de_cartas(jugador) < 21 and sum_de_cartas(dealer) < 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has ganado')
+            mensaje_en_pantalla('Has ganado', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
@@ -216,11 +240,11 @@ while not game_over:
 
         elif sum_de_cartas(jugador) < sum_de_cartas(dealer) and sum_de_cartas(jugador) < 21 and sum_de_cartas(dealer) < 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has Perdido')
+            mensaje_en_pantalla('Has Perdido', display_width/2, display_height/2)
             pygame.display.update()
             turno_dealer = False
             game_over = True
             turno_jugador = False
+        time.sleep(1)
 
-pygame.quit()
-quit()
+gameOver()
