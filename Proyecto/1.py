@@ -107,7 +107,6 @@ while not game_over:
     turno_jugador = True
 
 
-    #TODAVIA HAY PROBLEMAS
 
 
     while turno_jugador:
@@ -132,29 +131,24 @@ while not game_over:
             game_over = True
             turno_dealer = False
         elif sum_de_cartas(jugador) < 21:
-            ciclo = True
-
-
+            ciclo =True
+            
         while ciclo:
-            inputCiclo = input('Quiere pedir o plantarse:  ').lower()
-            if inputCiclo == 'pedir' or 'plantarse' or 'plantar' or 'planto':
-                ciclo = False
-
-        if inputCiclo == 'pedir':
-            jugador.append(baraja[-1])
-            del baraja[-1]
-            pygame.display.update()
-            mostrarcartas(jugador, 100, 500)
-            pygame.display.update()
-            turno_jugador = True
-            turno_dealer = False
-            game_over = False
-
-
-
-        elif inputCiclo == 'plantarse' or 'plantar' or 'planto':
-            turno_jugador = False
-            turno_dealer = True
+          for event in pygame.event.get():
+             if event.type == 'h':
+                jugador.append(baraja[-1])
+                del baraja[-1]
+                pygame.display.update()
+                mostrarcartas(jugador, 100, 500)
+                pygame.display.update()
+                turno_jugador = True
+                turno_dealer = False
+                game_over = False
+             
+             elif event.type == 's':
+                turno_jugador = False
+                turno_dealer = True
+                
 
     while turno_dealer:
         pygame.display.update()
