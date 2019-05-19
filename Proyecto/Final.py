@@ -42,48 +42,61 @@ def sum_de_cartas(mano):
                 suma += 11
     return suma
 
+#imprime una mano
 def imprimirmano(mano):
     for cada_carta in mano:
         print(cada_carta)
+
+#crea la baraja con todas las cartas
 
 for palo in palos.keys():
     for nombre_carta in range(1, 14):
         baraja.append(Cartas(palo, nombre_carta).__str__())
 
+#muestra las cartas de una mano
 
 def mostrarcartas(mano, x, y):
     for cartas in mano:
         foto = pygame.image.load('Cartas/'+cartas+'.PNG')
-        foto = pygame.transform.scale(foto,(80, 100))
+        foto = pygame.transform.scale(foto,(90, 150))
         gameDisplay.blit(foto, (x, y))
-        x += 55
+        x += 70
 
-def text_objects(text, font):
-    TextSurface = font.render(text, True, white)
+def text_objects(text, font, colour):
+    TextSurface = font.render(text, True, colour)
     return TextSurface, TextSurface.get_rect()
 
+#crea mensaje en pantalla
 
 def mensaje_en_pantalla(text, x, y):
     largeText = pygame.font.Font('freesansbold.ttf', 20)
-    TextSurf, TextRect = text_objects(text, largeText)
+    TextSurf, TextRect = text_objects(text, largeText, white)
     TextRect.center = ((x), (y))
     gameDisplay.blit(TextSurf, TextRect)
     pygame.display.update()
 
-display_width = 800
-display_height = 600
-gameDisplay = pygame.display.set_mode((display_width, display_height))
+def mensaje_en_pantalla_2(text, x, y):
+    largeText = pygame.font.Font('freesansbold.ttf', 40)
+    TextSurf, TextRect = text_objects(text, largeText, Cream)
+    TextRect.center = ((x), (y))
+    gameDisplay.blit(TextSurf, TextRect)
+    pygame.display.update()
+
+
+#Crea la tabla para jugar
 
 def board():
     pygame.init()
     ventana=pygame.display.set_mode((1290,650))
     pygame.display.set_caption("Real Game")
     board=pygame.image.load("Cartas/board.PNG")
+    board=pygame.transform.scale(board,(1290,650))
     ventana.blit(board,(0,0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
 
+#Juega toda la baraja
 
 def seguir():
     seguir_ciclo = True
@@ -106,6 +119,8 @@ def seguir():
             else:
                 seguir_ciclo = True
 
+#crea pantalla del fin del juego
+
 def gameOver():
     pygame.init()
     ventana = pygame.display.set_mode((1290, 650))
@@ -121,7 +136,6 @@ def gameOver():
 
 
 
-
 pygame.init()
 
 
@@ -131,7 +145,7 @@ jugador = []
 
 
 display_width = 1000
-display_height = 700
+display_height = 650
 white = (255, 255, 255)
 black = (0, 0, 0)
 green = (0, 120, 0)
@@ -145,14 +159,14 @@ gameDisplay = pygame.display.set_mode((display_width, display_height))
 
 
 banner=pygame.image.load("Cartas/pixel-blackjack_big.png")
+banner = pygame.transform.scale(banner,(1000,650))
 playbutton=pygame.image.load("Cartas/boton2.gif")
 playRect=playbutton.get_rect()
 playRect.topleft=(700,400)
-
 gameDisplay.fill(Azul)
-gameDisplay.blit(banner, (0,50))
+gameDisplay.blit(banner, (0,0))
 gameDisplay.blit(playbutton,(750,400))
-mensaje_en_pantalla("Click here!",650,500)
+mensaje_en_pantalla_2("Click here!",650,500)
 pygame.display.update()
 ciclo_inicio = True
 
@@ -193,7 +207,7 @@ while not game_over:
     del baraja[-1]
 
     pygame.display.update()
-    mostrarcartas(dealer, 500, 150)
+    mostrarcartas(dealer, 600, 117)
     mostrarcartas(jugador, 100, 500)
 
     mensaje_en_pantalla("Presione 'h' para pedir carta", 150, 100)
@@ -210,7 +224,7 @@ while not game_over:
 
         if sum_de_cartas(jugador) > 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('El dealer ha ganado', display_width/2, display_height/2)
+            mensaje_en_pantalla_2('El dealer ha ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             ciclo = False
             turno_jugador = False
@@ -220,7 +234,7 @@ while not game_over:
 
         elif sum_de_cartas(jugador) == 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has ganado', display_width/2, display_height/2)
+            mensaje_en_pantalla_2('Has ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             ciclo = False
             turno_jugador = False
@@ -254,21 +268,21 @@ while not game_over:
 
     while turno_dealer:
 
-        mostrarcartas(dealer, 500, 150)
+        mostrarcartas(dealer, 600, 117)
         pygame.display.update()
 
         if sum_de_cartas(dealer) == 21:
-            mostrarcartas(dealer, 500, 150)
-            mensaje_en_pantalla('El dealer ha  ganado', display_width/2, display_height/2)
+            mostrarcartas(dealer, 600, 117)
+            mensaje_en_pantalla_2('El dealer ha  ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
             pygame.time.wait(1000)
 
         if sum_de_cartas(dealer) > 21 and sum_de_cartas(jugador) < 21:
-            mostrarcartas(dealer, 500, 150)
+            mostrarcartas(dealer, 600, 117)
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('El dealer ha perdido', display_width/2, display_height/2)
+            mensaje_en_pantalla_2('El dealer ha perdido', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
@@ -276,23 +290,23 @@ while not game_over:
 
 
         elif sum_de_cartas(dealer) >= sum_de_cartas(jugador) and sum_de_cartas(dealer) > 21:
-            mostrarcartas(dealer, 500, 150)
-            mensaje_en_pantalla('El dealer ha ganado', display_width/2, display_height/2)
+            mostrarcartas(dealer, 600, 117)
+            mensaje_en_pantalla_2('El dealer ha ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
 
 
         elif sum_de_cartas(dealer) == sum_de_cartas(jugador) and sum_de_cartas(dealer) < 21:
-            mostrarcartas(dealer, 500, 150)
-            mensaje_en_pantalla('El dealer ha ganado', display_width/2, display_height/2)
+            mostrarcartas(dealer, 600, 117)
+            mensaje_en_pantalla_2('El dealer ha ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
 
 
 
-        elif sum_de_cartas(dealer) <= 17:
+        elif sum_de_cartas(dealer) < 17:
             dealer.append(baraja[-1])
             del baraja[-1]
             turno_dealer = True
@@ -301,7 +315,7 @@ while not game_over:
 
         elif sum_de_cartas(jugador) < 21 and sum_de_cartas(dealer) > 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has ganado', display_width/2, display_height/2)
+            mensaje_en_pantalla_2('Has ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
@@ -309,7 +323,7 @@ while not game_over:
 
         elif sum_de_cartas(jugador) > sum_de_cartas(dealer) and sum_de_cartas(jugador) < 21 and sum_de_cartas(dealer) < 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('Has ganado', display_width/2, display_height/2)
+            mensaje_en_pantalla_2('Has ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
@@ -317,7 +331,7 @@ while not game_over:
 
         elif sum_de_cartas(jugador) < sum_de_cartas(dealer) and sum_de_cartas(jugador) < 21 and sum_de_cartas(dealer) < 21:
             mostrarcartas(jugador, 100, 500)
-            mensaje_en_pantalla('El dealer ha ganado', display_width/2, display_height/2)
+            mensaje_en_pantalla_2('El dealer ha ganado', display_width/2+100, display_height/2)
             pygame.display.update()
             turno_dealer = False
             turno_jugador = False
@@ -325,6 +339,8 @@ while not game_over:
 
     if len(baraja) > 7:
         seguir()
+        pygame.time.wait(1000)
     else:
+        pygame.time.wait(2000)
         gameOver()
         game_over = True
